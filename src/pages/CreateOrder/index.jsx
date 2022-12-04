@@ -6,6 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Container } from "@mui/system";
 import { Button, TextField, Typography } from "@mui/material";
+import ProductSection from "./ProductSection";
 
 const CreateOrder = () => {
   const [table, setTable] = React.useState("");
@@ -13,18 +14,19 @@ const CreateOrder = () => {
   const [productName, setProductName] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
 
-  const handleProduct = (event) => {
-    setProductName(event.target.value);
-  };
-
   const handleCreateOrder = () => {
     console.log(table, servant);
   };
 
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    
+  }
+
   return (
     <Container sx={{ my: "40px" }}>
       <Typography variant="h4">Select a product from the list below</Typography>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Box>
           <FormControl>
             <Box sx={{ display: "flex", gap: 2, mt: 4, minWidth: 140 }}>
@@ -93,7 +95,7 @@ const CreateOrder = () => {
                       id="demo-simple-select"
                       value={productName}
                       label="Product name"
-                      onChange={handleProduct}
+                      onChange={(e) => setProductName(e.target.value)}
                     >
                       <MenuItem value={10}>Sandwich</MenuItem>
                       <MenuItem value={20}>Steak</MenuItem>
@@ -112,7 +114,12 @@ const CreateOrder = () => {
                 </Box>
                 <Box>
                   <FormControl>
-                    <TextField value={quantity} onChange={(e) =>setQuantity(e.target.value)} label="Quantity" variant="outlined" />
+                    <TextField
+                      value={quantity}
+                      onChange={(e) => setQuantity(e.target.value)}
+                      label="Quantity"
+                      variant="outlined"
+                    />
                   </FormControl>
                   <Typography sx={{ textAlign: "center", mt: 2 }}>
                     <b>$ 20</b>
@@ -123,6 +130,7 @@ const CreateOrder = () => {
           </Box>
         )}
       </form>
+      <ProductSection/>
     </Container>
   );
 };
