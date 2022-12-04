@@ -19,7 +19,7 @@ const TableItem = ({ rows, page, rowsPerPage, columns }) => {
                           sx={{
                             color: row.status === "sonlanmayan" ? "red" : "",
                           }}
-                        >
+                          >
                           {value}
                         </Typography>
                       </TableCell>

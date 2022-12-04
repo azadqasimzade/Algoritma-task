@@ -1,30 +1,25 @@
-/* eslint-disable array-callback-return */
-import * as React from "react";
-import { Box } from "@mui/system";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
+import {
+  Box,
+  Button,
+  Paper,
+  Table,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
-import { Button, Typography } from "@mui/material";
-import TableItem from "./TableItem";
+import React from "react";
+import TableItem from "../../../components/TableSection/TableItem";
 
 const columns = [
-  { id: "ss", label: "S/S", minWidth: "100%" },
-  { id: "table", label: "Table", minWidth: 100 },
+  { id: "number", label: "Number", minWidth: "100%" },
+  { id: "productName", label: "Product Name", minWidth: 100 },
   {
-    id: "servant",
-    label: "Servant",
-    minWidth: "100%",
-    align: "center",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "status",
-    label: "Status",
+    id: "quantity",
+    label: "Quantity",
     minWidth: "100%",
     align: "center",
     format: (value) => value.toLocaleString("en-US"),
@@ -34,10 +29,17 @@ const columns = [
     label: "Amount",
     minWidth: "100%",
     align: "center",
+    format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "expirationDate",
-    label: "Expiration Date",
+    id: "orderTime",
+    label: "Order Time",
+    minWidth: "100%",
+    align: "center",
+  },
+  {
+    id: "waitingTime",
+    label: "Waiting Time",
     minWidth: "100%",
     align: "center",
   },
@@ -47,19 +49,25 @@ const columns = [
     minWidth: "100%",
     align: "center",
   },
+  {
+    id: "buyBack",
+    label: "Buy Back",
+    minWidth: "100%",
+    align: "center",
+  },
 ];
 
-const TableSection = () => {
+const ProductSection = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [orders, setOrders] = React.useState([]);
+  const [products, setProducts] = React.useState([]);
 
   React.useEffect(() => {
     const fetchData = async () => {
       const response = await axios
-        .get("./data.json")
+        .get("./product.json")
         .then((res) => {
-          setOrders(res.data);
+          setProducts(res.data);
         })
         .catch((err) => {
           console.log(err);
@@ -69,19 +77,38 @@ const TableSection = () => {
     fetchData();
   }, []);
 
-  function createData(ss, table, servant, status, amount, expirationDate,button) {
-    return { ss, table, servant, status, amount, expirationDate,button };
+  function createData(
+    number,
+    productName,
+    quantity,
+    amount,
+    orderTime,
+    waitingTime,
+    button,
+    buyBack
+  ) {
+    return {
+      number,
+      productName,
+      quantity,
+      amount,
+      orderTime,
+      waitingTime,
+      button,
+      buyBack,
+    };
   }
 
-  const rows = orders.map((order, i) =>
+  const rows = products.map((product, i) =>
     createData(
       i + 1,
-      order.tableNumber,
-      order.servant,
-      order.status,
-      order.amount,
-      order.expirationDate,
-      <Button>See</Button>
+      product.productName,
+      product.quantity,
+      product.amount,
+      product.date,
+      product.status,
+      <Button>Was Given</Button>,
+      <Button>Buy back</Button>
     )
   );
 
@@ -94,28 +121,8 @@ const TableSection = () => {
     setPage(0);
   };
 
-  const filteredOrders = () => {
-    const statusOrders = orders.filter(
-      (order) => order.status === "sonlanmayan"
-    );
-    // console.log(statusOrders);
-  };
-
-  filteredOrders();
-
-  const test = () => {
-    orders.sort((a, b) => {
-      // console.log(a.status > b.status);
-      if(a.status > b.status) {
-        console.log("Sonlanmayan")
-      }
-    });
-  };
-
-  test();
-
   return (
-    <Box sx={{ mt: { xs: "20px", md: "0px" }, width: "100%" }}>
+    <Box sx={{ mt: 5, width: "100%" }}>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -132,7 +139,12 @@ const TableSection = () => {
                 ))}
               </TableRow>
             </TableHead>
-            <TableItem rows={rows} page={page} rowsPerPage={rowsPerPage} columns={columns} />
+            <TableItem
+              rows={rows}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              columns={columns}
+            />
           </Table>
         </TableContainer>
         <TablePagination
@@ -154,4 +166,4 @@ const TableSection = () => {
   );
 };
 
-export default TableSection;
+export default ProductSection;
