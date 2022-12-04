@@ -11,6 +11,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Container } from "@mui/system";
+import { Link } from "react-router-dom";
 
 const HeaderSection = () => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -80,8 +81,16 @@ const HeaderSection = () => {
               noWrap
               component="div"
             >
-              LOGO
+              <Link to={"/"}>LOGO</Link>
             </Typography>
+
+            <Box sx={{ flexGrow: 1, display: "flex" }}>
+              <MenuItem>
+                <Link to={"/create-an-order"} textAlign="center">
+                  Create an order
+                </Link>
+              </MenuItem>
+            </Box>
 
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
