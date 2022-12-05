@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -11,7 +12,6 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import React from "react";
 import ProductItem from "../ProductItem";
 
 const columns = [
@@ -58,11 +58,12 @@ const columns = [
 ];
 
 const ProductSection = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [products, setProducts] = React.useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [products, setProducts] = useState([]);
+  const [sortedProducts, setSortedProcuts] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const response = await axios
         .get("./product.json")
@@ -76,6 +77,24 @@ const ProductSection = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const productsData = [...products];
+
+    const customSort = (a, b) => {
+      const dateA = a?.date;
+      const dateB = b?.date;
+
+      if (dateA > dateB) return 1;
+      else if (dateA < dateB) return -1;
+      return 0;
+    };
+
+    setSortedProcuts(productsData.sort(customSort));
+    if (productsData && productsData.length > 0) {
+      customSort();
+    }
+  }, [products]);
 
   function createData(
     number,
@@ -99,19 +118,27 @@ const ProductSection = () => {
     };
   }
 
-  const rows = products.map((product, i) =>
+  const rows = sortedProducts.map((product, i) =>
     createData(
       i + 1,
       product.productName,
       product.quantity,
       product.amount,
       product.date,
-      product.waitingTime,
-      product.status,
-      product.status === "refusal" ? (
-        "was taken back"
+      product.waitingTime === "refusal" ? (
+        <Typography sx={{ color: "gray" }}>{product.waitingTime}</Typography>
       ) : (
-        <Button>Buy Back</Button>
+        <Typography sx={{ color: "green" }}>{product.waitingTime}</Typography>
+      ),
+      product.status === "refusal" ? (
+        <Typography sx={{ color: "gray" }}>{product.status}</Typography>
+      ) : (
+        <Typography sx={{ color: "green" }}>{product.status}</Typography>
+      ),
+      product.status === "refusal" ? (
+        <Typography sx={{ color: "gray" }}>was taken back</Typography>
+      ) : (
+        <Button variant="contained">Buy Back</Button>
       )
     )
   );

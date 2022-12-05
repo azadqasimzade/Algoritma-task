@@ -12,14 +12,6 @@ const ProductItem = ({ rows, page, rowsPerPage, columns }) => {
               <TableRow hover role="checkbox" tabIndex={-1} key={i}>
                 {columns.map((column) => {
                   const value = row[column.id];
-                  console.log(row);
-                  if (row.status === "refusal") {
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        <Typography>{value}</Typography>
-                      </TableCell>
-                    );
-                  }
                   return (
                     <TableCell key={column.id} align={column.align}>
                       <Typography>{value}</Typography>
@@ -29,7 +21,6 @@ const ProductItem = ({ rows, page, rowsPerPage, columns }) => {
               </TableRow>
             );
           })}
-        {console.log(rows)}
       </TableBody>
     </>
   );

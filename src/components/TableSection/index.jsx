@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/system";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -13,7 +13,7 @@ import { Button, Typography } from "@mui/material";
 import TableItem from "./TableItem";
 
 const columns = [
-  { id: "ss", label: "S/S", minWidth: "100%" },
+  { id: "ss", label: "N", minWidth: "100%" },
   { id: "table", label: "Table", minWidth: 100 },
   {
     id: "servant",
@@ -50,11 +50,12 @@ const columns = [
 ];
 
 const TableSection = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [orders, setOrders] = React.useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [orders, setOrders] = useState([]);
+  const [notEndedOrders, setNotEndedOrders] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const response = await axios
         .get("./data.json")
@@ -69,11 +70,19 @@ const TableSection = () => {
     fetchData();
   }, []);
 
-  function createData(ss, table, servant, status, amount, expirationDate,button) {
-    return { ss, table, servant, status, amount, expirationDate,button };
+  function createData(
+    ss,
+    table,
+    servant,
+    status,
+    amount,
+    expirationDate,
+    button
+  ) {
+    return { ss, table, servant, status, amount, expirationDate, button };
   }
 
-  const rows = orders.map((order, i) =>
+  const rows = notEndedOrders.map((order, i) =>
     createData(
       i + 1,
       order.tableNumber,
@@ -94,25 +103,24 @@ const TableSection = () => {
     setPage(0);
   };
 
-  const filteredOrders = () => {
-    const statusOrders = orders.filter(
-      (order) => order.status === "sonlanmayan"
-    );
-    // console.log(statusOrders);
-  };
+  useEffect(() => {
+    const sortedOrders = () => {
+      const ordersData = [...orders];
 
-  filteredOrders();
+      const customSort = (a, b) => {
+        const dateA = a?.expirationDate;
+        const dateB = b?.expirationDate;
 
-  const test = () => {
-    orders.sort((a, b) => {
-      // console.log(a.status > b.status);
-      if(a.status > b.status) {
-        console.log("Sonlanmayan")
-      }
-    });
-  };
-
-  test();
+        if (dateA > dateB) return 1;
+        else if (dateA < dateB) return -1;
+        return 0;
+      };
+      setNotEndedOrders(ordersData.sort(customSort));
+    };
+    if (orders && orders.length > 0) {
+      sortedOrders();
+    }
+  }, [orders]);
 
   return (
     <Box sx={{ mt: { xs: "20px", md: "0px" }, width: "100%" }}>
@@ -132,7 +140,12 @@ const TableSection = () => {
                 ))}
               </TableRow>
             </TableHead>
-            <TableItem rows={rows} page={page} rowsPerPage={rowsPerPage} columns={columns} />
+            <TableItem
+              rows={rows}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              columns={columns}
+            />
           </Table>
         </TableContainer>
         <TablePagination

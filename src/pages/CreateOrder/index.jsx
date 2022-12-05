@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -9,19 +9,20 @@ import { Button, TextField, Typography } from "@mui/material";
 import ProductSection from "./ProductSection";
 
 const CreateOrder = () => {
-  const [table, setTable] = React.useState("");
-  const [servant, setServant] = React.useState("");
-  const [productName, setProductName] = React.useState("");
-  const [quantity, setQuantity] = React.useState("");
+  const [table, setTable] = useState("");
+  const [servant, setServant] = useState("");
+  const [productName, setProductName] = useState("");
+  const [quantity, setQuantity] = useState("");
 
   const handleCreateOrder = () => {
     console.log(table, servant);
   };
 
-  const handleSubmit = (e) =>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    
-  }
+  };
+
+  
 
   return (
     <Container sx={{ my: "40px" }}>
@@ -130,7 +131,7 @@ const CreateOrder = () => {
           </Box>
         )}
       </form>
-      <ProductSection/>
+      <ProductSection />
     </Container>
   );
 };

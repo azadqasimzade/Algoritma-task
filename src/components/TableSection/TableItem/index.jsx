@@ -34,7 +34,6 @@ const TableItem = ({ rows, page, rowsPerPage, columns }) => {
               </TableRow>
             );
           })}
-        {console.log(rows)}
       </TableBody>
     </>
   );

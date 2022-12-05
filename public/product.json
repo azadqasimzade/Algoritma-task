@@ -14,7 +14,7 @@
     "amount": 12.9,
     "productName": "Steak",
     "date": "13:34",
-    "waitingTime": "imtina",
+    "waitingTime": "refusal",
     "status": "refusal"
   },
   {
@@ -41,7 +41,7 @@
     "amount": 12.3,
     "productName": "Pizza",
     "date": "15:11",
-    "waitingTime": "imtina",
+    "waitingTime": "refusal",
     "status": "refusal"
   },
   {
@@ -59,7 +59,7 @@
     "amount": 12.9,
     "productName": "Steak",
     "date": "13:34",
-    "waitingTime": "imtina",
+    "waitingTime": "refusal",
     "status": "refusal"
   },
   {
@@ -86,7 +86,7 @@
     "amount": 12.3,
     "productName": "Pizza",
     "date": "15:11",
-    "waitingTime": "imtina",
+    "waitingTime": "refusal",
     "status": "refusal"
   }
 ]
