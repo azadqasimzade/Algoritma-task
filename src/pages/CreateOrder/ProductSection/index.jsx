@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React from "react";
-import TableItem from "../../../components/TableSection/TableItem";
+import ProductItem from "../ProductItem";
 
 const columns = [
   { id: "number", label: "Number", minWidth: "100%" },
@@ -44,7 +44,7 @@ const columns = [
     align: "center",
   },
   {
-    id: "button",
+    id: "status",
     label: "#",
     minWidth: "100%",
     align: "center",
@@ -84,7 +84,7 @@ const ProductSection = () => {
     amount,
     orderTime,
     waitingTime,
-    button,
+    status,
     buyBack
   ) {
     return {
@@ -94,7 +94,7 @@ const ProductSection = () => {
       amount,
       orderTime,
       waitingTime,
-      button,
+      status,
       buyBack,
     };
   }
@@ -106,9 +106,13 @@ const ProductSection = () => {
       product.quantity,
       product.amount,
       product.date,
+      product.waitingTime,
       product.status,
-      <Button>Was Given</Button>,
-      <Button>Buy back</Button>
+      product.status === "refusal" ? (
+        "was taken back"
+      ) : (
+        <Button>Buy Back</Button>
+      )
     )
   );
 
@@ -139,7 +143,7 @@ const ProductSection = () => {
                 ))}
               </TableRow>
             </TableHead>
-            <TableItem
+            <ProductItem
               rows={rows}
               page={page}
               rowsPerPage={rowsPerPage}
@@ -157,10 +161,24 @@ const ProductSection = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <Box>
-        <Typography variant="h6" sx={{ textAlign: "right", mt: "10px" }}>
-          Total Amount: $<span>543</span>
-        </Typography>
+      <Box
+        sx={{
+          mt: 2,
+          display: { sx: "block", sm: "flex" },
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Button variant="contained" color="error">
+            Complete the order
+          </Button>
+        </Box>
+        <Box>
+          <Typography variant="h6" sx={{ textAlign: "center", mt: "10px" }}>
+            Total Amount: $<span>543</span>
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );
