@@ -1,7 +1,7 @@
 import React from "react";
 import { TableBody, TableCell, TableRow, Typography } from "@mui/material";
 
-const TableItem = ({ rows, page, rowsPerPage, columns }) => {
+const ProductItem = ({ rows, page, rowsPerPage, columns }) => {
   return (
     <>
       <TableBody>
@@ -12,19 +12,6 @@ const TableItem = ({ rows, page, rowsPerPage, columns }) => {
               <TableRow hover role="checkbox" tabIndex={-1} key={i}>
                 {columns.map((column) => {
                   const value = row[column.id];
-                  if (row.status === "sonlanmayan") {
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        <Typography
-                          sx={{
-                            color: row.status === "sonlanmayan" ? "red" : "",
-                          }}
-                          >
-                          {value}
-                        </Typography>
-                      </TableCell>
-                    );
-                  }
                   return (
                     <TableCell key={column.id} align={column.align}>
                       <Typography>{value}</Typography>
@@ -39,4 +26,4 @@ const TableItem = ({ rows, page, rowsPerPage, columns }) => {
   );
 };
 
-export default TableItem;
+export default ProductItem;

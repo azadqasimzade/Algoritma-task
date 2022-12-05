@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -11,8 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import React from "react";
-import TableItem from "../../../components/TableSection/TableItem";
+import ProductItem from "../ProductItem";
 
 const columns = [
   { id: "number", label: "Number", minWidth: "100%" },
@@ -44,7 +44,7 @@ const columns = [
     align: "center",
   },
   {
-    id: "button",
+    id: "status",
     label: "#",
     minWidth: "100%",
     align: "center",
@@ -58,11 +58,12 @@ const columns = [
 ];
 
 const ProductSection = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [products, setProducts] = React.useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [products, setProducts] = useState([]);
+  const [sortedProducts, setSortedProcuts] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const response = await axios
         .get("./product.json")
@@ -77,6 +78,24 @@ const ProductSection = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const productsData = [...products];
+
+    const customSort = (a, b) => {
+      const dateA = a?.date;
+      const dateB = b?.date;
+
+      if (dateA > dateB) return 1;
+      else if (dateA < dateB) return -1;
+      return 0;
+    };
+
+    setSortedProcuts(productsData.sort(customSort));
+    if (productsData && productsData.length > 0) {
+      customSort();
+    }
+  }, [products]);
+
   function createData(
     number,
     productName,
@@ -84,7 +103,7 @@ const ProductSection = () => {
     amount,
     orderTime,
     waitingTime,
-    button,
+    status,
     buyBack
   ) {
     return {
@@ -94,21 +113,33 @@ const ProductSection = () => {
       amount,
       orderTime,
       waitingTime,
-      button,
+      status,
       buyBack,
     };
   }
 
-  const rows = products.map((product, i) =>
+  const rows = sortedProducts.map((product, i) =>
     createData(
       i + 1,
       product.productName,
       product.quantity,
       product.amount,
       product.date,
-      product.status,
-      <Button>Was Given</Button>,
-      <Button>Buy back</Button>
+      product.waitingTime === "refusal" ? (
+        <Typography sx={{ color: "gray" }}>{product.waitingTime}</Typography>
+      ) : (
+        <Typography sx={{ color: "green" }}>{product.waitingTime}</Typography>
+      ),
+      product.status === "refusal" ? (
+        <Typography sx={{ color: "gray" }}>{product.status}</Typography>
+      ) : (
+        <Typography sx={{ color: "green" }}>{product.status}</Typography>
+      ),
+      product.status === "refusal" ? (
+        <Typography sx={{ color: "gray" }}>was taken back</Typography>
+      ) : (
+        <Button variant="contained">Buy Back</Button>
+      )
     )
   );
 
@@ -139,7 +170,7 @@ const ProductSection = () => {
                 ))}
               </TableRow>
             </TableHead>
-            <TableItem
+            <ProductItem
               rows={rows}
               page={page}
               rowsPerPage={rowsPerPage}
@@ -157,10 +188,24 @@ const ProductSection = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <Box>
-        <Typography variant="h6" sx={{ textAlign: "right", mt: "10px" }}>
-          Total Amount: $<span>543</span>
-        </Typography>
+      <Box
+        sx={{
+          mt: 2,
+          display: { sx: "block", sm: "flex" },
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Button variant="contained" color="error">
+            Complete the order
+          </Button>
+        </Box>
+        <Box>
+          <Typography variant="h6" sx={{ textAlign: "center", mt: "10px" }}>
+            Total Amount: $<span>543</span>
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

@@ -4,11 +4,9 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Container } from "@mui/system";
 import { Link } from "react-router-dom";
@@ -46,18 +44,6 @@ const HeaderSection = () => {
       <MenuItem>
         <IconButton
           size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <ShoppingCartIcon />
-          </Badge>
-        </IconButton>
-        <p>Orders</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
@@ -84,25 +70,14 @@ const HeaderSection = () => {
               <Link to={"/"}>LOGO</Link>
             </Typography>
 
-            <Box sx={{ flexGrow: 1, display: "flex" }}>
+            <Box sx={{ flexGrow: 1, display: "flex", ml: 2 }}>
               <MenuItem>
-                <Link to={"/create-an-order"} textAlign="center">
-                  Create an order
-                </Link>
+                <Link to={"/create-an-order"}>Create an order</Link>
               </MenuItem>
             </Box>
 
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <IconButton
-                size="large"
-                aria-label="show 17 new notifications"
-                color="inherit"
-              >
-                <Badge badgeContent={15} color="error">
-                  <ShoppingCartIcon />
-                </Badge>
-              </IconButton>
               <IconButton
                 size="large"
                 edge="end"

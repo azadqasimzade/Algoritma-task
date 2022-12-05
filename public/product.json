@@ -5,7 +5,8 @@
     "amount": 10.9,
     "productName": "Sandwich",
     "date": "15:59",
-    "status": "0 min"
+    "waitingTime": "0 min",
+    "status": "was given"
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "amount": 12.9,
     "productName": "Steak",
     "date": "13:34",
-    "status": "imtina"
+    "waitingTime": "refusal",
+    "status": "refusal"
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@
     "amount": 15.3,
     "productName": "Shrimp",
     "date": "14:23",
-    "status": "0 min"
+    "waitingTime": "0 min",
+    "status": "was given"
   },
   {
     "id": 4,
@@ -29,7 +32,8 @@
     "amount": 12.3,
     "productName": "Spaghetti",
     "date": "15:45",
-    "status": "0 min"
+    "waitingTime": "0 min",
+    "status": "was given"
   },
   {
     "id": 5,
@@ -37,7 +41,8 @@
     "amount": 12.3,
     "productName": "Pizza",
     "date": "15:11",
-    "status": "imtina"
+    "waitingTime": "refusal",
+    "status": "refusal"
   },
   {
     "id": 6,
@@ -45,7 +50,8 @@
     "amount": 10.9,
     "productName": "Sandwich",
     "date": "15:59",
-    "status": "0 min"
+    "waitingTime": "0 min",
+    "status": "was given"
   },
   {
     "id": 7,
@@ -53,7 +59,8 @@
     "amount": 12.9,
     "productName": "Steak",
     "date": "13:34",
-    "status": "imtina"
+    "waitingTime": "refusal",
+    "status": "refusal"
   },
   {
     "id": 8,
@@ -61,7 +68,8 @@
     "amount": 15.3,
     "productName": "Shrimp",
     "date": "14:23",
-    "status": "0 min"
+    "waitingTime": "0 min",
+    "status": "was given"
   },
   {
     "id": 9,
@@ -69,7 +77,8 @@
     "amount": 12.3,
     "productName": "Spaghetti",
     "date": "15:45",
-    "status": "0 min"
+    "waitingTime": "0 min",
+    "status": "was given"
   },
   {
     "id": 10,
@@ -77,6 +86,7 @@
     "amount": 12.3,
     "productName": "Pizza",
     "date": "15:11",
-    "status": "imtina"
+    "waitingTime": "refusal",
+    "status": "refusal"
   }
 ]
