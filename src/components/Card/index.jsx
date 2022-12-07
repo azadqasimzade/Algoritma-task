@@ -5,7 +5,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Container } from "@mui/system";
 import { Box } from "@mui/material";
-import TableSection from "../TableSection";
+import TableSection from "../Table";
 
 const CardSection = () => {
   return (

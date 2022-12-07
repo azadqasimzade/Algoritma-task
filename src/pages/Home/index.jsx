@@ -1,10 +1,10 @@
 import React from 'react'
-import CardSection from '../../components/CardSection'
+import Card from '../../components/Card'
 
 const Home = () => {
   return (
     <div>
-        <CardSection/>
+        <Card/>
     </div>
   )
 }
