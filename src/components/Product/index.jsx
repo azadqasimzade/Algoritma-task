@@ -66,7 +66,7 @@ const ProductSection = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios
-        .get("./product.json")
+        .get("./data.json")
         .then((res) => {
           setProducts(res.data);
         })
@@ -123,19 +123,19 @@ const ProductSection = () => {
       i + 1,
       product.productName,
       product.quantity,
-      product.amount,
+      "$" + product.amount,
       product.date,
       product.waitingTime === "refusal" ? (
         <Typography sx={{ color: "gray" }}>{product.waitingTime}</Typography>
       ) : (
         <Typography sx={{ color: "green" }}>{product.waitingTime}</Typography>
       ),
-      product.status === "refusal" ? (
-        <Typography sx={{ color: "gray" }}>{product.status}</Typography>
+      product.orderStatus === "refusal" ? (
+        <Typography sx={{ color: "gray" }}>{product.orderStatus}</Typography>
       ) : (
-        <Typography sx={{ color: "green" }}>{product.status}</Typography>
+        <Typography sx={{ color: "green" }}>{product.orderStatus}</Typography>
       ),
-      product.status === "refusal" ? (
+      product.orderStatus === "refusal" ? (
         <Typography sx={{ color: "gray" }}>was taken back</Typography>
       ) : (
         <Button variant="contained">Buy Back</Button>

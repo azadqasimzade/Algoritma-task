@@ -1,12 +1,12 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import HeaderSection from "./components/HeaderSection";
+import Header from "./components/Header";
 import Routers from "./routes/Routes";
 
 function App() {
 
   return (
     <Router>
-      <HeaderSection/>
+      <Header/>
       <Routers />
     </Router>
   );

@@ -6,7 +6,8 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Container } from "@mui/system";
 import { Button, TextField, Typography } from "@mui/material";
-import ProductSection from "./ProductSection";
+import Product from "../../components/Product";
+import axios from "axios";
 
 const CreateOrder = () => {
   const [table, setTable] = useState("");
@@ -20,9 +21,21 @@ const CreateOrder = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const fetchData = async () => {
+      const response = await axios.post("http://localhost:3000/data.json",{
+        quantity,
+        tableNumber:table,
+        productName,
+        servant
+      })
+      .then((res) =>console.log(res))
+      .catch((err) => console.log(err))
+      return response;
+    };
+    fetchData();
   };
 
-  
 
   return (
     <Container sx={{ my: "40px" }}>
@@ -43,11 +56,11 @@ const CreateOrder = () => {
                     label="Select Servant"
                     onChange={(e) => setServant(e.target.value)}
                   >
-                    <MenuItem value={10}>James</MenuItem>
-                    <MenuItem value={20}>Monika</MenuItem>
-                    <MenuItem value={30}>Sezar</MenuItem>
-                    <MenuItem value={40}>Karolina</MenuItem>
-                    <MenuItem value={50}>Jessica</MenuItem>
+                    <MenuItem value={"James"}>James</MenuItem>
+                    <MenuItem value={"Monika"}>Monika</MenuItem>
+                    <MenuItem value={"Sezar"}>Sezar</MenuItem>
+                    <MenuItem value={"Karolina"}>Karolina</MenuItem>
+                    <MenuItem value={"Jessica"}>Jessica</MenuItem>
                   </Select>
                   <Button
                     onClick={handleCreateOrder}
@@ -71,18 +84,18 @@ const CreateOrder = () => {
                     label="Select Table"
                     onChange={(e) => setTable(e.target.value)}
                   >
-                    <MenuItem value={10}>m1</MenuItem>
-                    <MenuItem value={20}>k3</MenuItem>
-                    <MenuItem value={30}>m5</MenuItem>
-                    <MenuItem value={40}>f2</MenuItem>
-                    <MenuItem value={50}>c4</MenuItem>
+                    <MenuItem value={"m1"}>m1</MenuItem>
+                    <MenuItem value={"k3"}>k3</MenuItem>
+                    <MenuItem value={"m5"}>m5</MenuItem>
+                    <MenuItem value={"f2"}>f2</MenuItem>
+                    <MenuItem value={"c4"}>c4</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
             </Box>
           </FormControl>
         </Box>
-        {table > 0 && servant > 0 && (
+        {table.length > 0 && servant.length > 0 && (
           <Box>
             <FormControl>
               <Box sx={{ display: "flex", gap: 2, mt: 4, minWidth: 140 }}>
@@ -98,14 +111,14 @@ const CreateOrder = () => {
                       label="Product name"
                       onChange={(e) => setProductName(e.target.value)}
                     >
-                      <MenuItem value={10}>Sandwich</MenuItem>
-                      <MenuItem value={20}>Steak</MenuItem>
-                      <MenuItem value={30}>Shrimp</MenuItem>
-                      <MenuItem value={40}>Spaghetti</MenuItem>
-                      <MenuItem value={50}>Pizza</MenuItem>
+                      <MenuItem value={"Sandwich"}>Sandwich</MenuItem>
+                      <MenuItem value={"Steak"}>Steak</MenuItem>
+                      <MenuItem value={"Shrimp"}>Shrimp</MenuItem>
+                      <MenuItem value={"Spaghetti"}>Spaghetti</MenuItem>
+                      <MenuItem value={"Pizza"}>Pizza</MenuItem>
                     </Select>
                     <Button
-                      type="button"
+                      type="submit"
                       variant="contained"
                       sx={{ mt: "10px" }}
                     >
@@ -131,7 +144,7 @@ const CreateOrder = () => {
           </Box>
         )}
       </form>
-      <ProductSection />
+      <Product />
     </Container>
   );
 };
