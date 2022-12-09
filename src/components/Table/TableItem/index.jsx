@@ -12,14 +12,14 @@ const TableItem = ({ rows, page, rowsPerPage, columns }) => {
               <TableRow hover role="checkbox" tabIndex={-1} key={i}>
                 {columns.map((column) => {
                   const value = row[column.id];
-                  if (row.status === "sonlanmayan") {
+                  if (row.status === "Sonlanmayan") {
                     return (
                       <TableCell key={column.id} align={column.align}>
                         <Typography
                           sx={{
-                            color: row.status === "sonlanmayan" ? "red" : "",
+                            color: row.status === "Sonlanmayan" ? "red" : "",
                           }}
-                          >
+                        >
                           {value}
                         </Typography>
                       </TableCell>

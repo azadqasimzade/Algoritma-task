@@ -8,3 +8,7 @@ a{
     text-decoration: none;
     color: #fff;
 }
+
+.MuiList-root{
+    height: 200px;
+}

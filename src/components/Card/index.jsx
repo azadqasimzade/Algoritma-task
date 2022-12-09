@@ -32,7 +32,7 @@ const CardSection = () => {
                 officiis unde libero deleniti praesentium debitis dolorem
                 perspiciatis!
               </Typography>
-              <Typography sx={{mt:2}}><b>Number of orders: 15</b></Typography>
+              <Typography sx={{mt:2}}><b>Sifarişlərin sayı: 15</b></Typography>
             </CardContent>
           </Card>
         </Box>

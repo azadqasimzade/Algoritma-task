@@ -72,7 +72,7 @@ const HeaderSection = () => {
 
             <Box sx={{ flexGrow: 1, display: "flex", ml: 2 }}>
               <MenuItem>
-                <Link to={"/create-an-order"}>Create an order</Link>
+                <Link to={"/add-product"}>Məhsul əlavə et</Link>
               </MenuItem>
             </Box>
 

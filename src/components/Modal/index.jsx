@@ -21,8 +21,6 @@ const style = {
 const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
   const handleClose = () => setShowModal(false);
 
-  console.log(modalContent);
-
   return (
     <div>
       <Modal
@@ -54,7 +52,7 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   whiteSpace: "nowrap",
                 }}
               >
-                <b>Table:</b> {modalContent.tableNumber}
+                <b>Masa:</b> {modalContent.tableName}
               </Typography>
               <Typography
                 sx={{
@@ -65,19 +63,22 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   whiteSpace: "nowrap",
                 }}
               >
-                <b>Servant:</b> {modalContent.servant}
+                <b>Xidmətçi:</b> {modalContent.servant}
               </Typography>
-              <Typography 
+              <Typography
                 sx={{
                   py: 1,
                   px: 2,
                   border: "1px solid rgba(224, 224, 224, 1)",
                   borderRadius: "5px",
                   whiteSpace: "nowrap",
-                  color:[modalContent.status === "sonlanmayan" ? "red" : "green"]
+                  color: [modalContent.status === "unending" ? "red" : "green"],
                 }}
               >
-                <b>Status:</b> {modalContent.status}
+                <b>Status:</b>{" "}
+                {modalContent.status === "unending"
+                  ? "Sonlanmayan"
+                  : "Sonlanan"}
               </Typography>
               <Typography
                 sx={{
@@ -88,7 +89,7 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   whiteSpace: "nowrap",
                 }}
               >
-                <b>Amount:</b> {modalContent.amount}
+                <b>Məbləğ:</b> {modalContent.amount} AZN
               </Typography>
               <Typography
                 sx={{
@@ -99,7 +100,7 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   whiteSpace: "nowrap",
                 }}
               >
-                <b>Expiration Date:</b> {modalContent.expirationDate}
+                <b>Sonlanma Tarixi:</b> {modalContent.expirationDate}
               </Typography>
               <Typography
                 sx={{
@@ -110,7 +111,7 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   whiteSpace: "nowrap",
                 }}
               >
-                <b>Product Name:</b> {modalContent.productName}
+                <b>Məhsulun adı:</b> {modalContent.productName}
               </Typography>
               <Typography
                 sx={{
@@ -121,7 +122,7 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   whiteSpace: "nowrap",
                 }}
               >
-                <b>Quantity:</b> {modalContent.quantity}
+                <b>Miqdar:</b> {modalContent.quantity}
               </Typography>
               <Typography
                 sx={{
@@ -132,7 +133,7 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   whiteSpace: "nowrap",
                 }}
               >
-                <b>Order Time:</b> {modalContent.date}
+                <b>Sifariş Saatı:</b> {modalContent.date}
               </Typography>
               <Typography
                 sx={{
@@ -143,7 +144,10 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   whiteSpace: "nowrap",
                 }}
               >
-                <b>Waiting Time:</b> {modalContent.waitingTime}
+                <b>Gözləmə:</b>{" "}
+                {modalContent.waitingTime === "refusal"
+                  ? "imtina"
+                  : modalContent.waitingTime}
               </Typography>
               <Typography
                 sx={{
@@ -152,10 +156,15 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   border: "1px solid rgba(224, 224, 224, 1)",
                   borderRadius: "5px",
                   whiteSpace: "nowrap",
-                  color:[modalContent.waitingTime === "refusal" ? "gray" : ""]
+                  color: [
+                    modalContent.waitingTime !== "refusal" ? "gray" : "green",
+                  ],
                 }}
               >
-                <b>Order Status:</b> {modalContent.orderStatus}
+                <b>Sifariş Status:</b>{" "}
+                {modalContent.orderStatus === "refusal"
+                  ? "gözləmədə"
+                  : "verildi"}
               </Typography>
             </Box>
           </Box>
