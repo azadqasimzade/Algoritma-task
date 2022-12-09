@@ -1,5 +1,6 @@
-/* eslint-disable array-callback-return */
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getOrders, showOrders } from "../../features/ordersSlice";
 import { Box } from "@mui/system";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -12,13 +13,15 @@ import axios from "axios";
 import { Button, Typography } from "@mui/material";
 import TableItem from "./TableItem";
 import ModalSection from "../Modal";
+import CreateOrder from "./CreateOrder";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const columns = [
-  { id: "ss", label: "N", minWidth: "100%" },
-  { id: "table", label: "Table", minWidth: 100 },
+  { id: "ss", label: "S/S", minWidth: "100%" },
+  { id: "table", label: "Masa", minWidth: 100 },
   {
     id: "servant",
-    label: "Servant",
+    label: "Xidmətçi",
     minWidth: "100%",
     align: "center",
     format: (value) => value.toLocaleString("en-US"),
@@ -32,13 +35,13 @@ const columns = [
   },
   {
     id: "amount",
-    label: "Amount",
+    label: "Məbləğ",
     minWidth: "100%",
     align: "center",
   },
   {
     id: "expirationDate",
-    label: "Expiration Date",
+    label: "Sonlanma Tarixi",
     minWidth: "100%",
     align: "center",
   },
@@ -53,25 +56,30 @@ const columns = [
 const TableSection = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [orders, setOrders] = useState([]);
   const [notEndedOrders, setNotEndedOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState("");
+  const [isloaded, setIsLoaded] = useState(false);
+
+  const showOrdersData = useSelector(showOrders);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoaded(true);
       const response = await axios
-        .get("./data.json")
+        .get("https://6391e771b750c8d178d1017a.mockapi.io/orders")
         .then((res) => {
-          setOrders(res.data);
+          dispatch(getOrders(res.data));
         })
         .catch((err) => {
           console.log(err);
         });
+      setIsLoaded(false);
       return response;
     };
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   function createData(
     ss,
@@ -88,22 +96,25 @@ const TableSection = () => {
   const rows = notEndedOrders.map((order, i) =>
     createData(
       i + 1,
-      order.tableNumber,
+      order.tableName,
       order.servant,
-      order.status,
-      "$" + order.amount,
+      order.status === "unending" ? "Sonlanmayan" : "Sonlanan",
+      order.amount + " AZN",
       order.expirationDate,
-      <Button onClick={() => handleClick(order.id)}>See</Button>
+      <Button variant="contained" onClick={() => handleClick(order.id)}>
+        Bax
+      </Button>
     )
   );
 
   const handleClick = (id) => {
-    const ordersD = [...orders];
+    const ordersD = [...showOrdersData];
     ordersD.map((order) => {
       if (id === order.id) {
         setModalContent(order);
         setShowModal(true);
       }
+      // eslint-disable-next-line
       return;
     });
   };
@@ -119,11 +130,11 @@ const TableSection = () => {
 
   useEffect(() => {
     const sortedOrders = () => {
-      const ordersData = [...orders];
+      const ordersData = [...showOrdersData];
 
       const customSort = (a, b) => {
-        const dateA = a?.expirationDate;
-        const dateB = b?.expirationDate;
+        const dateA = String(a?.expirationDate);
+        const dateB = String(b?.expirationDate);
 
         if (dateA > dateB) return 1;
         else if (dateA < dateB) return -1;
@@ -131,53 +142,62 @@ const TableSection = () => {
       };
       setNotEndedOrders(ordersData.sort(customSort));
     };
-    if (orders && orders.length > 0) {
+    if (showOrdersData && showOrdersData.length > 0) {
       sortedOrders();
     }
-  }, [orders]);
+  }, [showOrdersData]);
 
   return (
     <>
       <Box sx={{ mt: { xs: "20px", md: "0px" }, width: "100%" }}>
-        <Paper sx={{ width: "100%", overflow: "hidden" }}>
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column, i) => (
-                    <TableCell
-                      key={i}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableItem
-                rows={rows}
-                page={page}
+        <CreateOrder />
+        {isloaded ? (
+          <CircularProgress />
+        ) : showOrdersData.length > 0 ? (
+          <>
+            <Paper sx={{ width: "100%", overflow: "hidden" }}>
+              <TableContainer sx={{ maxHeight: 440 }}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column, i) => (
+                        <TableCell
+                          key={i}
+                          align={column.align}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableItem
+                    rows={rows}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    columns={columns}
+                  />
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 15]}
+                component="div"
+                count={rows.length}
                 rowsPerPage={rowsPerPage}
-                columns={columns}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
               />
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 15]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-        <Box>
-          <Typography variant="h6" sx={{ textAlign: "right", mt: "10px" }}>
-            Total Amount: $<span>543</span>
-          </Typography>
-        </Box>
+            </Paper>
+            <Box>
+              <Typography variant="h6" sx={{ textAlign: "right", mt: "10px" }}>
+                Toplam məbləğ: <span>543</span> AZN
+              </Typography>
+            </Box>
+          </>
+        ) : (
+          <Typography variant="h4" sx={{mt:2}}>Hal-hazırda heç bir sifariş yoxdur.</Typography>
+        )}
       </Box>
       {showModal ? (
         <ModalSection
