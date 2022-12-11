@@ -62,6 +62,8 @@ const TableSection = () => {
   const [isloaded, setIsLoaded] = useState(false);
 
   const showOrdersData = useSelector(showOrders);
+  const {totalAmount} = useSelector((state) => state.orders)
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -100,7 +102,7 @@ const TableSection = () => {
       order.servant,
       order.status === "unending" ? "Sonlanmayan" : "Sonlanan",
       order.amount + " AZN",
-      order.expirationDate,
+      order.expirationDate ? order.expirationDate : "--",
       <Button variant="contained" onClick={() => handleClick(order.id)}>
         Bax
       </Button>
@@ -131,7 +133,7 @@ const TableSection = () => {
   useEffect(() => {
     const sortedOrders = () => {
       const ordersData = [...showOrdersData];
-
+      
       const customSort = (a, b) => {
         const dateA = String(a?.expirationDate);
         const dateB = String(b?.expirationDate);
@@ -191,7 +193,7 @@ const TableSection = () => {
             </Paper>
             <Box>
               <Typography variant="h6" sx={{ textAlign: "right", mt: "10px" }}>
-                Toplam məbləğ: <span>543</span> AZN
+                Toplam məbləğ: <span>{(totalAmount).toFixed(2)}</span> AZN
               </Typography>
             </Box>
           </>

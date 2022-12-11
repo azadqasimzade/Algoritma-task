@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useSelector } from "react-redux";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -8,6 +9,8 @@ import { Box } from "@mui/material";
 import TableSection from "../Table";
 
 const CardSection = () => {
+  const {quantity} = useSelector((state) => state.orders)
+
   return (
     <Container sx={{ mt: "40px" }}>
       <Box sx={{ display: { xs: "block", md: "flex" }, gap: 3 }}>
@@ -32,7 +35,9 @@ const CardSection = () => {
                 officiis unde libero deleniti praesentium debitis dolorem
                 perspiciatis!
               </Typography>
-              <Typography sx={{mt:2}}><b>Sifarişlərin sayı: 15</b></Typography>
+              <Typography sx={{ mt: 2 }}>
+                <b>Sifarişlərin sayı: {quantity}</b>
+              </Typography>
             </CardContent>
           </Card>
         </Box>

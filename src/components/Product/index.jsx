@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getOrders, showOrders } from "../../features/ordersSlice";
+import {
+  completeOrder,
+  getOrders,
+  showOrders,
+} from "../../features/ordersSlice";
 import {
   Box,
   Button,
@@ -14,8 +18,9 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import ProductItem from "../ProductItem";
+import ProductItem from "./ProductItem";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ToastContainer, toast } from "react-toastify";
 
 const columns = [
   { id: "number", label: "S/S", minWidth: "100%" },
@@ -67,6 +72,8 @@ const ProductSection = () => {
   const [isloaded, setIsLoaded] = useState(false);
 
   const showOrdersData = useSelector(showOrders);
+  const { totalAmount } = useSelector((state) => state.orders);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -93,8 +100,8 @@ const ProductSection = () => {
       const dateA = a?.date;
       const dateB = b?.date;
 
-      if (dateA > dateB) return 1;
-      else if (dateA < dateB) return -1;
+      if (dateA < dateB) return 1;
+      else if (dateA > dateB) return -1;
       return 0;
     };
 
@@ -103,6 +110,30 @@ const ProductSection = () => {
       customSort();
     }
   }, [showOrdersData]);
+
+  const notifySuccess = () =>
+    toast.success("Məhsul geri alındı", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const notifyComplete = () =>
+    toast.success("Sifariş tamamlandı", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
 
   function createData(
     number,
@@ -129,24 +160,33 @@ const ProductSection = () => {
   const rows = sortedProducts.map((product, i) =>
     createData(
       i + 1,
-      product.productName,
+      product.productName ? (
+        product.productName
+      ) : (
+        <Typography sx={{ color: "gray" }}>Məhsul yoxdur</Typography>
+      ),
       product.quantity,
       product.amount + " AZN",
       product.date,
-      product.waitingTime === "refusal" ? (
+      product.orderStatus === "expected" ? (
+        <Typography sx={{ color: "gray" }}>gözləmədə..</Typography>
+      ) : product.orderStatus === "refusal" ? (
         <Typography sx={{ color: "gray" }}>imtina</Typography>
       ) : (
-        <Typography sx={{ color: "green" }}>
-          {product.waitingTime?.slice(0, 2) + "dəq"}
-        </Typography>
+        <Typography sx={{ color: "green" }}>0 dəq</Typography>
       ),
-      product.orderStatus === "refusal" ? (
+      product.orderStatus === "expected" ? (
         <Typography
           sx={{
-            color: "white",
-            bgcolor: "#a5b1c2",
-            borderRadius: "5px",
-            p: 0.8,
+            color: "gray",
+          }}
+        >
+          gözləmədə..
+        </Typography>
+      ) : product.orderStatus === "refusal" ? (
+        <Typography
+          sx={{
+            color: "gray",
           }}
         >
           imtina
@@ -163,13 +203,40 @@ const ProductSection = () => {
           verildi
         </Typography>
       ),
-      product.orderStatus === "refusal" ? (
+      product.orderStatus === "expected" ? (
+        <Typography sx={{ color: "gray" }}>gözləmədə..</Typography>
+      ) : product.orderStatus === "refusal" ? (
         <Typography sx={{ color: "gray" }}>imtina</Typography>
       ) : (
-        <Button variant="contained">Geri al</Button>
+        <Button onClick={() => handleClick(product.id)} variant="contained">
+          Geri al
+        </Button>
       )
     )
   );
+
+  const handleClick = (id) => {
+    const fetchData = async () => {
+      const response = await axios
+        .put(`https://6391e771b750c8d178d1017a.mockapi.io/orders/${id}`, {
+          status: "unending",
+          orderStatus: "refusal",
+          expirationDate: "",
+        })
+        .then((res) => {
+          dispatch(getOrders(sortedProducts));
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+      return response;
+    };
+    fetchData();
+    notifySuccess();
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -180,11 +247,25 @@ const ProductSection = () => {
     setPage(0);
   };
 
+  const handleComplete = async () => {
+    await showOrdersData.map((item) =>
+      axios
+        .delete(`https://6391e771b750c8d178d1017a.mockapi.io/orders/${item.id}`)
+        .then(() => {
+          dispatch(completeOrder([]));
+        })
+        .catch((err) => {
+          throw new Error(err);
+        })
+    );
+    notifyComplete();
+  };
+
   return (
     <Box sx={{ mt: 5, width: "100%" }}>
       {isloaded ? (
         <CircularProgress />
-      ) : (
+      ) : showOrdersData.length > 0 ? (
         <>
           <Paper sx={{ width: "100%", overflow: "hidden" }}>
             <TableContainer sx={{ maxHeight: 440 }}>
@@ -229,17 +310,26 @@ const ProductSection = () => {
             }}
           >
             <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Button variant="contained" color="error">
-                Complete the order
+              <Button
+                onClick={handleComplete}
+                variant="contained"
+                color="error"
+              >
+                SİFARİŞİ TAMAMLAYIN
               </Button>
             </Box>
             <Box>
               <Typography variant="h6" sx={{ textAlign: "center", mt: "10px" }}>
-                Toplam məbləğ: <span>543</span>AZN
+                Toplam məbləğ: <span>{totalAmount.toFixed(2)}</span>AZN
               </Typography>
             </Box>
           </Box>
+          <ToastContainer />
         </>
+      ) : (
+        <Typography variant="h4" sx={{ mt: 2 }}>
+          Hal-hazırda heç bir sifariş yoxdur.
+        </Typography>
       )}
     </Box>
   );

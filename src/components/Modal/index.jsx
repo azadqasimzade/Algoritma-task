@@ -145,7 +145,7 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                 }}
               >
                 <b>Gözləmə:</b>{" "}
-                {modalContent.waitingTime === "refusal"
+                {modalContent.orderStatus === "refusal"
                   ? "imtina"
                   : modalContent.waitingTime}
               </Typography>
@@ -157,13 +157,19 @@ const ModalSection = ({ showModal, setShowModal, ...modalContent }) => {
                   borderRadius: "5px",
                   whiteSpace: "nowrap",
                   color: [
-                    modalContent.waitingTime !== "refusal" ? "gray" : "green",
+                    modalContent.orderStatus === "refusal"
+                      ? "gray"
+                      : modalContent.orderStatus === "expected"
+                      ? "gray"
+                      : "green",
                   ],
                 }}
               >
                 <b>Sifariş Status:</b>{" "}
-                {modalContent.orderStatus === "refusal"
+                {modalContent.orderStatus === "expected"
                   ? "gözləmədə"
+                  : modalContent.orderStatus === "refusal"
+                  ? "imtina"
                   : "verildi"}
               </Typography>
             </Box>
