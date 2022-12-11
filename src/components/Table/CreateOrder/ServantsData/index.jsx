@@ -28,6 +28,7 @@ const ServantData = ({ servant, setServant }) => {
     };
     fetchData();
   }, [dispatch]);
+  
   return (
     <Box sx={{ minWidth: 150 }}>
       <FormControl fullWidth>

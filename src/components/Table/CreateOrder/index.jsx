@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrderAsync } from "../../../features/ordersSlice";
 import { Button, FormControl } from "@mui/material";
 import { Box } from "@mui/system";
 import { nanoid } from "nanoid";
@@ -9,28 +8,35 @@ import localization from "moment/locale/az";
 import { ToastContainer, toast } from "react-toastify";
 import TablesData from "./TablesData";
 import ServantsData from "./ServantsData";
+import axios from "axios";
+import { createOrderAsync, showOrders } from "../../../features/ordersSlice";
 import { showTables } from "../../../features/tablesSlice";
 
 const CreateOrder = () => {
   const [table, setTable] = useState("");
   const [servant, setServant] = useState("");
+  const [orders, setOrders] = useState([]);
   const [tables, setTables] = useState([]);
-
-  const showTablesData = useSelector(showTables);
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const tablesData = [showTablesData];
-    tablesData.map((item) => setTables(item));
-  }, [showTablesData]);
+  const showOrdersData = useSelector(showOrders);
+  const showTablesData = useSelector(showTables);
 
   moment.locale("az", localization);
+
+  useEffect(() => {
+    const ordersData = [...showOrdersData];
+    const tablesData = [...showTablesData];
+
+    setOrders(ordersData);
+    setTables(tablesData);
+  }, [showOrdersData, showTablesData]);
 
   const notifySuccess = () =>
     toast.success("Sifariş yaradıldı", {
       position: "top-right",
-      autoClose: 3000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -42,7 +48,7 @@ const CreateOrder = () => {
   const notifyEmpty = () =>
     toast.error("Dəyərlər boş olmamalıdır", {
       position: "top-right",
-      autoClose: 3000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -54,7 +60,7 @@ const CreateOrder = () => {
   const notifyAlready = () =>
     toast.error("Masa artıq əlavə edilib", {
       position: "top-right",
-      autoClose: 3000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -64,42 +70,54 @@ const CreateOrder = () => {
     });
 
   const handleCreateOrder = () => {
-    const alreadyTables = tables.filter((item) => item.tableName === table);
+    const alreadyTable = orders.find((item) => item.tableName === table);
 
-    if (table && servant) {
-      if (alreadyTables) {
-        notifyAlready();
-      } else {
-        dispatch(
-          createOrderAsync({
-            id: nanoid(),
-            quantity: 0,
-            tableName: table,
-            productName: "",
-            date: moment().format("LT"),
-            waitingTime: moment().startOf("minutes").fromNow(),
-            servant,
-            status: "unending",
-            orderStatus: "refusal",
-            amount: 0,
-            expirationDate: "",
+    if (alreadyTable) {
+      notifyAlready();
+    } else if (table && servant) {
+      const updateTable = async () => {
+        const tableId = tables.find((item) => item?.tableName === table);
+
+        const id = Number(tableId.id);
+        const response = await axios
+          .put(`https://6391e771b750c8d178d1017a.mockapi.io/tables/${id}`, {
+            tableEmpty: false,
           })
-        );
-        notifySuccess();
-        setServant("");
-        setTable("");
-      }
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            throw new Error(err);
+          });
+        return response;
+      };
+      updateTable();
+      dispatch(
+        createOrderAsync({
+          id: nanoid(),
+          quantity: 0,
+          tableName: table,
+          productName: "",
+          date: moment().format("LT"),
+          waitingTime: moment().startOf("minutes").fromNow(),
+          servant,
+          status: "unending",
+          orderStatus: "expected",
+          amount: 0,
+          expirationDate: "",
+        })
+      );
+      notifySuccess();
+      setServant("");
+      setTable("");
     } else {
       notifyEmpty();
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
   return (
     <Box>
-      <form onSubmit={handleSubmit}>
+      <form>
         <Box>
           <FormControl>
             <Box sx={{ display: "flex", gap: 2, mb: 4, minWidth: 150 }}>

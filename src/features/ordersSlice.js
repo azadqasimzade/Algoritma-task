@@ -14,11 +14,19 @@ export const ordersSlice = createSlice({
   reducers: {
     getOrders: (state, action) => {
       state.data = action.payload;
+      state.quantity = state.data.length;
+      state.totalAmount = state.data.reduce(
+        (total, item) => total + Number(item.amount),
+        0
+      );
     },
     createOrder: (state, action) => {
       state.data.push(action.payload);
-      state.quantity = state.data.length;
-    }
+      state.quantity++;
+    },
+    completeOrder: (state, action) => {
+      state.data = action.payload;
+    },
   },
 });
 
@@ -32,6 +40,7 @@ export const createOrderAsync = (data) => async (dispatch) => {
   }
 };
 
-export const { createOrder, getOrders } = ordersSlice.actions;
+export const { createOrder, getOrders, quantity, totalAmount, completeOrder } =
+  ordersSlice.actions;
 export const showOrders = (state) => state.orders.data;
 export default ordersSlice.reducer;
